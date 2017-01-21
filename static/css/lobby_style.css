@@ -1,0 +1,116 @@
+
+body{
+	background-image: url('../img/Background_BLACK_web_page_-1005x1125.jpg');
+	background-repeat: no-repeat;
+	background-size: 100% 100%;	
+}
+#lobby{
+	margin: 0 auto;
+	width: 800px;
+	text-align: center;
+}
+
+h1{
+    color: green;
+}
+#status{
+	height: 30px;
+	width: 800px;
+	background-color: #D8D8D8;
+	font-size: 1.3em;
+	padding: 5px;
+	border: 1px solid black;
+	text-align: left;
+}
+#status div{
+	float: left;
+	margin-right: 10px;
+}
+#status button{
+	float: right;
+	margin-top: -20px;
+}
+
+#mainFrame{
+	height: 400px;
+	width: 800px;
+	background-image: url('../img/Background_papyrus.jpg');
+	background-size: 100% 100%;
+	padding: 5px;
+	border: 1px solid black;
+	
+}
+
+.zone{
+	border: 1px outset black;
+	padding: 8px;
+	height: 165px;
+	width: 800px;
+
+}
+#currentLevel{
+	border: 1px outset black;
+	height: 200px;
+	
+	float: left;
+}
+#currentLevel h2{
+	color: black;
+	font-weight: bold;
+}
+.levelButton{
+	border: 10px outset grey;
+	border-radius: 50px;
+	width: 100px;
+	height: 100px;
+	margin-left: 25px;
+	float: left;
+	background-color: grey;
+	padding-top: 21px;
+	font-weight: bold;
+	font-size: 30px;
+	color: black;
+	text-decoration: none;
+}
+.levelButton a{
+	color: black;
+	text-decoration: none;
+}
+.levelButton:hover{
+	background-color: yellow;
+}
+
+.achivementFrame{
+	border: 2px solid black;
+	border-radius: 10px;
+	width: 200px;
+	height: 280px;
+	margin: 5px;
+	float: right;
+	background-color: #D8D8D8;
+	text-align: center;
+}
+.achivementFrame li{
+	text-align: left;
+}
+#buttonZone{
+	width: 100%;
+	height: 30px;
+	background-color: #F7BE81;
+	position: relative;
+	top: 140px;
+	border-radius: 10px;
+	
+}
+#buttonZone button{
+	float: left;
+	margin-top: 4px;
+	margin-left: 45px;
+	margin-right: 44px;
+}
+
+
+/*Widgets___________________________________________*/
+
+
+

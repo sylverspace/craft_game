@@ -1,0 +1,117 @@
+{% extends "main.html" %}
+{% block content %}
+
+	<!-- jQuery  -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<!--jquery UI-->
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<!--Style for levels-->
+<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/levels_style.css')}}">
+<script src="{{url_for('static', filename='js/jquery.time-to.min.js')}}"></script>
+<audio id="audioChime1" src="{{url_for('static', filename='audio/chime1.ogg')}}"></audio>
+
+
+</head>
+<body>
+<div id="levelPage">
+
+	<h1>Level 01</h1>
+
+
+    <div id="countdown-1"></div>
+    <p>
+    	
+    	<a id="reset-1"class="btn btn-default">Reset Clock</a>
+    	<a href="{{ url_for('lobby') }}" class="btn btn-default">Back to lobby</a>
+    </p>
+
+    <div class="clock"></div>
+    
+
+
+	<div id="status">
+	    <div class="ressources">Water: <span id="water"> </span></div>
+	    <div class="ressources">Wood: <span id="wood"> </span></div>
+	    <div class="ressources">Rock: <span id="rock"> </span></div>
+	    <div class="ressources">Wood Planks: <span id="woodplanks"> </span></div>
+	    <div class="ressources">Houses: <span id="houses"> </span></div>
+	    <div class="ressources">Availiable Workers: <span id="workers" style="color:red"> </span>/<span id="totalWorkers"> </span></div>
+	</div>
+
+
+
+<div id="mainFrame">
+	<div class="ressourceFrame">
+		<img src="{{url_for('static', filename='img/water_logo_25x25.png')}}">
+		<p>
+		  <label for="spinnerWater">Workers:</label>
+		  <input id="spinnerWater" name="value">
+		</p>
+	</div>
+	<div class="ressourceFrame">
+		<img src="{{url_for('static', filename='img/wood_logo_25x25.png')}}">
+		<p>
+		  <label for="spinnerWood">Workers:</label>
+		  <input id="spinnerWood" name="value">
+		</p>
+	</div>
+	<div class="ressourceFrame">
+		<img src="{{url_for('static', filename='img/rock_logo_25x25.png')}}">
+		<p>
+		  <label for="spinnerRock">Workers:</label>
+		  <input id="spinnerRock" name="value">
+		</p>
+	</div>
+
+	<div class="objectiveFrame">
+		<h2>Objectives</h2>
+		<ol>
+			<li>Build 2 houses</li>
+			<li>Gather 20 water</li>
+			<li></li>
+		</ol>
+	</div>
+
+</div>
+
+<div id="craftingSection">
+	<div class="craft">
+		<span class="title">Wood plank</span><br>
+		<span class="requirements">Water x2 Wood x4</span><br>
+		<button id="craftWoodplanks">Craft</button>
+		<div class="progBar" id="woodplanksProgressbar"></div>
+	</div>
+	<div class="craft">
+		<span class="title">Hire Worker</span><br>
+		<span class="requirements">Water x10 Wood x6</span><br>
+		<button id="craftWorkers">Craft</button>
+		<div class="progBar" id="workerProgressbar"></div>
+	</div>
+	<div class="craft">
+		<span class="title">House</span><br>
+		<span class="requirements">Woodplanks x4</span><br>
+		<span class="time">5 sec.</span><br>
+		<button id="craftHouseButton">Craft</button>
+		<div class="progBar" id="houseProgressbar"></div>
+	</div>
+</div><!--Crafting section-->
+</div><!--FULLPAGE-->
+
+
+<!--MODAL JQUERY DIALOG________________________________________________________-->
+<div id="dialog-message" title="Level Completed">
+  <p>
+    <span class="ui-icon ui-icon-circle-check" style="float:left; margin:0 7px 50px 0;"></span>
+    You completed all of your objectives!
+  </p>
+  <p>
+    <b>Level 01 completed</b>.
+  </p>
+</div>
+
+
+<script type="text/javascript" src="../static/js/level_script.js"></script>
+
+
+{% endblock %}

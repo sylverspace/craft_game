@@ -1,0 +1,63 @@
+{% extends "main.html" %}
+{% block content %}
+<div id="lobby">
+
+	<h1>Lobby</h1>
+
+
+
+	<div id="status">
+		{% for message in get_flashed_messages() %}
+			{{ message }}
+		{% endfor %}
+	</div>
+
+
+
+<div id="mainFrame">
+	<!--levelbuttons_______________________________________________________-->
+	<div id="currentLevel">
+		<h2>Current level:</h2>
+		<div id="levelButton01" class="levelButton">
+			<p>
+				<a href="{{ url_for('level_01') }}" title="START">01</a>
+			</p>
+		</div>
+		<div id="levelButton02" class="levelButton">
+			<p>
+				<a href="{{ url_for('level_01') }}" title="START">02</a>
+			</p>
+		</div>
+		<div id="levelButton03" class="levelButton">
+			<p>
+				<a href="{{ url_for('level_01') }}" title="START">03</a>
+			</p>
+		</div>
+	</div>
+
+	
+
+	<div class="achivementFrame">
+		<h2>Achievements</h2>
+		<ul>
+			<li>Last level completed: <span class="levelCompleted"></span></li>
+			<li>Time: <span class="timeCompleted"></span></li></li>
+		</ul>
+	</div>
+</div>
+
+
+
+
+<a href="{{ url_for('logout') }}">Logout</a>
+
+
+</div><!--lobby-->
+
+{% endblock %}
+
+
+
+
+
+
