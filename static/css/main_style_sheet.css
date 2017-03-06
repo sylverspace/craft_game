@@ -1,0 +1,40 @@
+/*Main style sheet*/
+
+
+.resourceGroup{
+	/*text-align: center;*/
+	border: 1px solid black;
+	display: inline-block;
+	padding: 5px;
+	border-radius: 8px;
+}
+.resourcesLabel{
+	color: black;
+	padding: 6px;
+	margin-right: 5px;
+	border-radius: 4px;
+	float: left;
+	font-weight: bold;
+}
+
+.resources{
+	color: white;
+	padding: 6px;
+	margin-right: 5px;
+	border-radius: 4px;
+	float: left;
+}
+
+.common{
+	background-color: grey;
+	
+}
+.rare{
+	background-color: blue;
+}
+.epic{
+	background-color: purple;
+}
+.legendary{
+	background-color: orange;
+}
