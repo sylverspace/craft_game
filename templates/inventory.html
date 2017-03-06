@@ -1,0 +1,52 @@
+{% extends "main.html" %}
+{% block content %}
+
+<h1>Inventory</h1>
+
+<div id="tabs">
+    <ul>
+        <li><a href="#tabs-1">Resources</a></li>
+        <li><a href="#tabs-2">Tab 2</a></li>
+        <li><a href="#tabs-3">Tab 3</a></li>
+        <li><a href="#tabs-4">Tab 4</a></li>
+        <li><a href="#tabs-5">Tab 5</a></li>
+    </ul>
+
+  
+    <div id="tabs-1">
+    	Water = <span id="WATER">{{ water }}</span><br/>
+    	Wood = {{ wood }}<br/>
+    	Rock = {{ rock }}<br/>
+    	
+    </div>
+    <div id="tabs-2">
+    	asdasdasd
+    </div>
+    <div id="tabs-3">
+    	asdasdasd
+    </div>
+    <div id="tabs-4">
+    	asdasdasd
+    </div>
+    <div id="tabs-5">
+    	asdasdasd
+    </div>
+
+</div><!--Tabs-->
+
+
+
+<script type="text/javascript">
+$(function(){
+
+	$( "#tabs" ).tabs();
+
+
+
+
+});
+
+
+</script>
+
+{% endblock %}

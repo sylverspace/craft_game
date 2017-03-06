@@ -1,0 +1,175 @@
+{% extends "main.html" %}
+{% block content %}
+		
+
+
+    <script src="{{url_for('static', filename='three/three.js')}}"></script>
+    <script src="{{url_for('static', filename='three/Detector.js')}}"></script>
+    <script src="{{url_for('static', filename='three/OrbitControls.js')}}"></script>
+    <script src="{{url_for('static', filename='three/OBJLoader.js')}}"></script>
+    <script src="{{url_for('static', filename='three/MTLLoader.js')}}"></script>
+    <script src="{{url_for('static', filename='three/DDSLoader.js')}}"></script>
+    <script src="{{url_for('static', filename='three/stats.min.js')}}"></script>
+
+<style>
+body {
+    overflow: hidden;
+    
+    
+}
+#renderScene{
+    width: 200px;
+    height: 200px;
+}
+
+
+</style>
+
+</head>
+<body>
+
+<div id="renderScene">
+asd
+
+</div>
+
+<script>
+
+$(document).ready(function(){
+
+
+
+// The detector will show a warning if the current browser does not support WebGL.
+if (!Detector.webgl) {
+    Detector.addGetWebGLMessage();
+}
+
+// All of these variables will be needed later, just ignore them for now.
+var container, stats;
+var camera, controls, scene, renderer;
+var lighting, ambient, keyLight, fillLight, backLight;
+
+var mouseX = 0, mouseY = 0;
+
+var windowHalfX = window.innerWidth / 2;
+var windowHalfY = window.innerHeight / 2;
+
+init();
+animate();
+
+function init() {
+    container = document.getElementById('renderScene');
+    document.body.appendChild(container);
+    
+
+    //Camera
+    camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 2000 );
+    camera.position.z = 2;
+    camera.position.y = 0;
+    camera.position.x = 0;
+
+    //Scene
+    scene = new THREE.Scene();
+    var ambient = new THREE.AmbientLight( 0x444444 );
+    scene.add( ambient );
+
+    //Lighting
+    var directionalLight = new THREE.DirectionalLight( 0xffeedd );
+    directionalLight.position.set( 0, 0, 1 ).normalize();
+    scene.add( directionalLight );
+
+    
+
+
+    //Model
+
+    var onProgress = function ( xhr ) {
+        if ( xhr.lengthComputable ) {
+            var percentComplete = xhr.loaded / xhr.total * 100;
+            console.log( Math.round(percentComplete, 2) + '% downloaded' );
+        }
+    };
+
+    var onError = function ( xhr ) { };
+
+    THREE.Loader.Handlers.add( /\.dds$/i, new THREE.DDSLoader() );
+
+    var mtlLoader = new THREE.MTLLoader();
+    mtlLoader.setPath( '../' );
+    mtlLoader.load( '../static/three/HexagonShape.mtl', function( materials ) {
+        materials.preload();
+        var objLoader = new THREE.OBJLoader();
+        objLoader.setMaterials( materials );
+        objLoader.setPath( '../' );
+        objLoader.load( '../static/three/M1911.obj', function ( object ) {
+            object.position.y = 0;
+            scene.add( object );
+        }, onProgress, onError );
+    });
+
+
+    //Renderer
+    renderer = new THREE.WebGLRenderer();
+    renderer.setClearColor(0x0000ff)
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(200, 200);
+    container.appendChild( renderer.domElement );
+    //renderer.setClearColor(new THREE.Color("hsl(0, 0%, 10%)"));
+
+    container.appendChild(renderer.domElement);
+
+    //document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+
+    window.addEventListener( 'resize', onWindowResize, false );
+
+}//init
+
+    function onWindowResize() {
+        windowHalfX = window.innerWidth / 2;
+        windowHalfY = window.innerHeight / 2;
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize( container.innerWidth, container.innerHeight );
+    }
+/*
+    function onDocumentMouseMove( event ) {
+        mouseX = ( event.clientX - windowHalfX ) / 2;
+        mouseY = ( event.clientY - windowHalfY ) / 2;
+    }*/
+
+    //Controls
+    controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.25;
+    controls.enableZoom = false;
+
+    function animate() {
+        requestAnimationFrame( animate );
+        render();
+    }
+
+
+    function render() {
+        //camera.position.x += ( mouseX - camera.position.x ) * .05;
+        //camera.position.y += ( - mouseY - camera.position.y ) * .05;
+        //camera.rotation.x += 1;
+        camera.lookAt( scene.position );
+        renderer.render( scene, camera );
+    }
+
+
+
+
+
+
+
+
+});
+</script>
+
+</body>
+</html>
+
+
+
+{% endblock %}

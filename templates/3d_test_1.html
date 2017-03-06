@@ -1,0 +1,104 @@
+{% extends "main.html" %}
+{% block content %}
+
+<script src="{{url_for('static', filename='three/three.js')}}"></script>
+
+<style type="text/css">
+
+#terminal{
+	width: 502px;
+	height: 502px;
+	border: 1px solid black;
+}
+
+</style>
+
+
+
+<div id="terminal"></div>
+
+
+
+<script type="text/javascript">
+$(document).ready(function(){
+
+
+// WEBGL SECTION___________________3d test 1__________________________________________
+
+var zone = document.getElementById("terminal");
+zone.width = 500;
+zone.height = 500;
+
+
+//Renderer
+var renderer = new THREE.WebGLRenderer();
+renderer.setClearColor(0x0000ff) //Black background
+renderer.setPixelRatio(zone.devicePixelRatio)
+renderer.setSize( zone.width, zone.height );
+zone.appendChild( renderer.domElement );
+
+
+//Camera
+var camera = new THREE.PerspectiveCamera( 75, zone.width / zone.height, 0.1, 1000 );
+camera.position.z = 10;
+camera.position.x = 1;
+
+//Scene
+var scene = new THREE.Scene();
+
+//Lights
+
+
+//Material
+//exemples
+//new THREE.MeshBasicMaterial({color:0xff0000}) // for red
+//new THREE.MeshNormalMaterial(); // for basic
+//new THREE.MeshLambertMaterial(); // for basic
+
+var materialBox = new THREE.MeshStandardMaterial({metalness:2, roughness:0.5});
+var materialSphere = new THREE.MeshNormalMaterial();
+var materialGrass = new THREE.MeshBasicMaterial({color:0x00ff00})
+
+//Geometry
+
+
+var geoBox = new THREE.BoxGeometry( 1, 1, 1 );
+var box = new THREE.Mesh( geoBox, materialSphere );
+scene.add( box );
+
+var geoSphere = new THREE.SphereGeometry(1, 50, 50, 0, Math.PI * 2, 0, Math.PI * 2);
+var sphere = new THREE.Mesh( geoSphere, materialSphere );
+sphere.position.x = 5;
+scene.add( sphere );
+
+var geoPlane = new THREE.PlaneBufferGeometry(20,5,0,0)
+var plane = new THREE.Mesh(geoPlane, materialGrass)
+plane.position.y = -6
+scene.add(plane)
+
+
+
+
+//Render Loop
+
+render();
+
+
+function render() {
+
+	box.rotation.x += 0.01;
+	box.rotation.y += 0.02;
+
+    sphere.rotation.y += 0.01;
+
+	requestAnimationFrame( render );
+	renderer.render( scene, camera );
+}
+
+
+});//doc ready
+
+
+</script>
+
+{% endblock %}

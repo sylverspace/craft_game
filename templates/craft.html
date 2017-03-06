@@ -1,0 +1,168 @@
+{% extends "main.html" %}
+{% block content %}
+
+<style type="text/css">
+
+
+
+#tabs{
+    width: 50%;
+    float: left;
+    overflow: hidden;
+}
+#recipeDetailsDiv{
+    border: 1px solid black;
+    border-radius: 10px;
+    float: left;
+    width: 300px;
+    height: 400px;
+    margin-left: 40px;
+    padding-left: 10px;
+
+}
+#recipeDetailsDiv h3/*Name*/{
+    text-align: center;
+    text-decoration: underline;
+}
+/*#recipeDetails{
+    margin: 5px;
+    text-align: center;
+}
+.hiddenInfo{
+    display: none;
+}*/
+table{
+
+}
+
+
+</style>
+
+
+
+<h1>Crafting</h1>
+
+<div id="tabs">
+    <ul>
+        <li><a href="#tab-1">Tab 1</a></li>
+        <li><a href="#tab-2">Tab 2</a></li>
+        <li><a href="#tab-3">Tab 3</a></li>
+        <li><a href="#tab-4">Tab 4</a></li>
+        <li><a href="#tab-5">Tab 5</a></li>
+    </ul>
+
+<!--TAB-1____RECIPES_______________________________________-->
+    <div id="tab-1">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                </tr> 
+            </thead>
+            <tbody>
+                {% for recipe in Recipes._registry %}
+                <tr class='clickableRow' \
+                data-name="{{ recipe.name }}"\
+                data-type="{{ recipe.type }}"\
+                data-desc="{{ recipe.desc }}"\
+                data-ing_1="{{ recipe.ing_1 }}"\
+                data-ing_1_qty="{{ recipe.ing_1_qty }}"\
+                data-ing_2="{{ recipe.ing_2 }}"\
+                data-ing_2_qty="{{ recipe.ing_2_qty }}"\>
+                    <td>{{ recipe.name }}</td>
+                    <td>{{ recipe.type }}</td>
+                    <!--<td class="hiddenInfo">
+                        {{ recipe.prereq }}
+                        {{ recipe.ing_1 }}
+                        {{ recipe.ing_1_qty }}
+                        {{ recipe.ing_2 }}
+                        {{ recipe.ing_2_qty }}
+                        {{ recipe.desc }}
+                    </td>-->
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+<!--TAB-2____________________________________________________-->
+    <div id="tab-2">
+    	Tab 2
+    </div>
+    <div id="tab-3">
+    	Tab 3
+    </div>
+    <div id="tab-4">
+    	Tab 4
+    </div>
+    <div id="tab-5">
+    	Tab 5
+    </div>
+
+</div><!--Tabs-->
+
+
+<!--Recipe details____________________________________________-->
+<div id="recipeDetailsDiv">
+    <div id="recipeDetails">
+        <h3 id="clickedName"></h3>
+        <span id="clickedType"></span></br>
+        <span id="clickedDesc"></span></br>
+        <span id="clickedIng_1"></span>  <span id="clickedIng_1_qty"></span></br>
+        <span id="clickedIng_2"></span>  <span id="clickedIng_2_qty"></span></br>
+        <button id="craftBtn" class="btn btn-success" value="{{ recipe.result }}">Craft</button>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+$( "#tabs" ).tabs();
+
+console.log($("#craftBtn").val());
+
+$(".clickableRow").click(function(){
+
+    clickedName = $(this).data("name");
+    clickedType = $(this).data("type");
+    clickedDesc = $(this).data("desc");
+    clickedIng_1 = $(this).data("ing_1");
+    clickedIng_1_qty = $(this).data("ing_1_qty");
+    clickedIng_2 = $(this).data("ing_2");
+    clickedIng_2_qty = $(this).data("ing_2_qty");
+
+    
+    $("#clickedName").html(clickedName);
+    $("#clickedType").html("Type: " + clickedType);
+    $("#clickedDesc").html("Description: " + clickedDesc);
+    $("#clickedIng_1").html(clickedIng_1 + ": ");
+    $("#clickedIng_1_qty").html(clickedIng_1_qty);
+    $("#clickedIng_2").html(clickedIng_2 + ": ");
+    $("#clickedIng_2_qty").html(clickedIng_2_qty);
+
+    
+});
+
+//This calls a python function to  craft the item.
+
+$("#craftBtn").on("click", function(){
+        $.ajax({
+        type: 'POST',
+        url: '/craftProcess/' + $("#craftBtn").val(),
+        success: function(data){
+            console.log(data);
+            obj = JSON.parse(data);
+            console.log(obj);
+            //$("#" +  obj.finding  ).html(obj.newval);
+
+        }
+    });
+});
+
+
+
+
+</script>
+
+{% endblock %}

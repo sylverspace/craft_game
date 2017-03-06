@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title></title>
+
+	<!--timeTo.js-->
+	<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/timeTo.css')}}">
+
+	<!-- jQuery  -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+	<!--jquery UI-->
+	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+	<!-- Bootstrap Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+	<!--My style sheet-->
+	<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/main_style_sheet.css')}}">
+
+    <!--
+    <script src="{{url_for('static', filename='js/three.js')}}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/threejs/r83/three.min.js"></script>
+    <script src="http://threejs.org/examples/js/controls/OrbitControls.js"></script>
+    <script src="{{url_for('static', filename='js/ColladaLoader2.js')}}"></script>
+    --> 
+
+	<!--<script src="{{url_for('static', filename='js/draggable.js')}}"></script>-->
+
+
+
+<style type="text/css">
+
+.subPages{
+    margin-left: 20px;
+}
+
+
+</style>
+
+</head>
+<body>
+
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">RTS-2</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+            <li><a href="{{url_for('map')}}">Map</a></li>
+            <li><a href="{{url_for('inventory')}}">Inventory</a></li>
+            <li><a href="{{url_for('craft')}}">Craft</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">3d tests <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="{{url_for('test_1')}}">3d test-1</a></li>
+                <li><a href="{{url_for('test_2')}}">3d test 2</a></li>
+                <li><a href="{{url_for('test_3')}}">3d test 2</a></li>
+                <li><a href="#">Something else here</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a href="#">Separated link</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a href="#">One more separated link</a></li>
+              </ul>
+            </li>
+        </ul>
+
+        <ul class="nav navbar-nav navbar-right navbar-form">
+            <form action="{{ url_for('logout') }}">
+                <button class="btn btn-warning" type="submit">logout</button>
+            </form>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <p>Welcome <strong>{{ g.user }}</strong><p>
+        </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+
+
+
+<!--Water block-->
+<div class="resourceGroup">
+    <span class="resourcesLabel">Water {</span>
+    <div class="resources common">Salt Water = <span id="saltWater">{{ saltWater }}</span></div>
+
+    <div class="resources rare">Fresh Water = <span id="freshWater">{{ freshWater }}</span></div>
+
+    <div class="resources epic">Elixir = <span id="elixir">{{ elixir }}</span></div>
+
+    <div class="resources legendary">Pearls = <span id="pearl">{{ pearl }}</span></div>
+</div>
+
+<!--Mining block-->
+<div class="resourceGroup">
+    <span class="resourcesLabel">Mining {</span>
+    <div class="resources common">Iron = <span id="iron">{{ iron }}</span></div>
+
+    <div class="resources rare">Coal = <span id="coal">{{ coal }}</span></div>
+
+    <div class="resources epic">Titanium = <span id="titanium">{{ titanium }}</span></div>
+
+    <div class="resources legendary">Diamonds = <span id="diamond">{{ diamond }}</span></div>
+</div>
+
+<br/><br/>
+
+
+
+<div class="subPages">
+
+
+{% block content %}
+<!--Sub pages here-->
+{% endblock %}
+
+</div>
+
+
+
+
+</body>
+</html>
