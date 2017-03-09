@@ -10,16 +10,19 @@
 
 
 
-
+<!--
 <button class="region" value="water">Water</button>
 <button class="region" value="mine">Mine</button>
-
+-->
 <br/><br/>
 
 
-<img src="{{url_for('static', filename='img/mainmap.PNG')}}"/>
+<img src="{{url_for('static', filename='img/mainmap.PNG')}}" usemap="#planetmap"/>
 
-
+<map name="planetmap">
+  <area class="region" shape="poly" coords="800,0,800,194,670,194,670,0" alt="water" data-region-type="water">
+  <area class="region" shape="poly" coords="0,350,57,356,102,383,161,390,219,430,224,479,0,479" alt="rock" data-region-type="mine">
+</map>
 
 <div id="accordion">
   	<h3>Section 1</h3>
@@ -60,8 +63,8 @@ function gather(type){
 
 //This calls a python function to add mats.
 $('.region').click(function(){
-	clickedRegion = $(this).val();
-	//console.log(clickedRegion);
+	clickedRegion = $(this).data("region-type");
+	console.log(clickedRegion);
   	$.ajax({
 	  	type: 'POST',
 	  	url: '/gather/' + clickedRegion,

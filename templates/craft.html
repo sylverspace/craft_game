@@ -24,13 +24,7 @@
     text-align: center;
     text-decoration: underline;
 }
-/*#recipeDetails{
-    margin: 5px;
-    text-align: center;
-}
-.hiddenInfo{
-    display: none;
-}*/
+
 table{
 
 }
@@ -61,8 +55,9 @@ table{
                 </tr> 
             </thead>
             <tbody>
-                {% for recipe in Recipes._registry %}
+                {% for recipe in recipes %}
                 <tr class='clickableRow' \
+                data-result="{{ recipe.result }}"\
                 data-name="{{ recipe.name }}"\
                 data-type="{{ recipe.type }}"\
                 data-desc="{{ recipe.desc }}"\
@@ -72,14 +67,6 @@ table{
                 data-ing_2_qty="{{ recipe.ing_2_qty }}"\>
                     <td>{{ recipe.name }}</td>
                     <td>{{ recipe.type }}</td>
-                    <!--<td class="hiddenInfo">
-                        {{ recipe.prereq }}
-                        {{ recipe.ing_1 }}
-                        {{ recipe.ing_1_qty }}
-                        {{ recipe.ing_2 }}
-                        {{ recipe.ing_2_qty }}
-                        {{ recipe.desc }}
-                    </td>-->
                 </tr>
                 {% endfor %}
             </tbody>
@@ -105,14 +92,14 @@ table{
 
 <!--Recipe details____________________________________________-->
 <div id="recipeDetailsDiv">
-    <div id="recipeDetails">
-        <h3 id="clickedName"></h3>
-        <span id="clickedType"></span></br>
-        <span id="clickedDesc"></span></br>
-        <span id="clickedIng_1"></span>  <span id="clickedIng_1_qty"></span></br>
-        <span id="clickedIng_2"></span>  <span id="clickedIng_2_qty"></span></br>
-        <button id="craftBtn" class="btn btn-success" value="{{ recipe.result }}">Craft</button>
-    </div>
+    
+    <h3 id="clickedName"></h3>
+    <span id="clickedType"></span></br>
+    <span id="clickedDesc"></span></br>
+    <span id="clickedIng_1"></span>  <span id="clickedIng_1_qty"></span></br>
+    <span id="clickedIng_2"></span>  <span id="clickedIng_2_qty"></span></br>
+    <button id="craftBtn" class="btn btn-success">Craft</button>
+    
 </div>
 
 
@@ -120,10 +107,11 @@ table{
 
 $( "#tabs" ).tabs();
 
-console.log($("#craftBtn").val());
+console.log($(".clickableRow").data("result"))
 
 $(".clickableRow").click(function(){
 
+    clickedResult = $(this).data("result");
     clickedName = $(this).data("name");
     clickedType = $(this).data("type");
     clickedDesc = $(this).data("desc");
@@ -131,6 +119,7 @@ $(".clickableRow").click(function(){
     clickedIng_1_qty = $(this).data("ing_1_qty");
     clickedIng_2 = $(this).data("ing_2");
     clickedIng_2_qty = $(this).data("ing_2_qty");
+    console.log(clickedResult);
 
     
     $("#clickedName").html(clickedName);
@@ -144,16 +133,16 @@ $(".clickableRow").click(function(){
     
 });
 
-//This calls a python function to  craft the item.
+//This calls a python function to craft the item.
 
 $("#craftBtn").on("click", function(){
         $.ajax({
         type: 'POST',
-        url: '/craftProcess/' + $("#craftBtn").val(),
+        url: '/craftProcess/' + clickedResult,
         success: function(data){
             console.log(data);
-            obj = JSON.parse(data);
-            console.log(obj);
+            //obj = JSON.parse(data);
+            //console.log(obj);
             //$("#" +  obj.finding  ).html(obj.newval);
 
         }

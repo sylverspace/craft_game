@@ -1,15 +1,105 @@
 from flask import Flask, render_template, redirect, url_for, request, session, flash, jsonify, g
-from functools import wraps
-from config import *
-from recipes import *
 import sqlite3 as sql
 import os
 import random
 import json
+from flask_sqlalchemy import SQLAlchemy
+
 
 app = Flask(__name__)
 
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///RTSDB.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 app.secret_key = os.urandom(24)
+
+db = SQLAlchemy(app)
+
+class Data(db.Model):
+	__tablename__ = "data"
+	id = db.Column('id', db.Integer, primary_key=True)
+	user = db.Column("user", db.String(20))
+	password = db.Column("password", db.String(20))
+	saltWater = db.Column("saltwater", db.String(20))
+	freshWater = db.Column("freshWater", db.String(20))
+	elixir = db.Column("elixir", db.String(20))
+	pearl = db.Column("pearl", db.String(20))
+	iron = db.Column("iron", db.String(20))
+	coal = db.Column("coal", db.String(20))
+	titanium = db.Column("titanium", db.String(20))
+	diamond = db.Column("diamond", db.String(20))
+
+
+
+	def __init__(self, id, user, password, saltWater, freshWater, elixir, pearl, iron, coal, titanium, diamond):
+		self.id = id
+		self.user = user
+		self.password = password
+		self.saltWater = saltWater
+		self.freshWater = freshWater
+		self.elixir = elixir
+		self.pearl = pearl
+		self.iron = iron
+		self.coal = coal
+		self.titanium = titanium
+		self.diamond = diamond
+
+	def __str__(self):
+		return {
+            'id': self.id, 
+            'user': self.user,
+            'password': self.password,
+            'saltWater': self.saltWater,
+            'freshWater': self.freshWater,
+            'elixir': self.elixir,
+            'pearl': self.pearl,
+            'iron': self.iron,
+            'coal': self.coal,
+            'titanium': self.titanium,
+            'diamond': self.diamond,
+        }
+
+class Recipes(db.Model):
+	__tablename__ = "recipes"
+	id = db.Column('id', db.Integer, primary_key=True)
+	name = db.Column("name", db.String(20))
+	type = db.Column("type", db.String(20))
+	result = db.Column("result", db.String(20))
+	prereq = db.Column("prereq", db.String(20))
+	ing_1 = db.Column("ing_1", db.String(20))
+	ing_qty_1 = db.Column("ing_qty_1", db.Integer)
+	ing_2 = db.Column("ing_2", db.String(20))
+	ing_qty_2 = db.Column("ing_qty_2", db.Integer)
+	desc = db.Column("desc", db.String(20))
+
+	def __init__(self, id, name, type, result, prereq, ing_1, ing_qty_1, ing_2, coal, ing_qty_2, desc):
+		self.id = id
+		self.name = name
+		self.type = type
+		self.result = result
+		self.prereq = prereq
+		self.ing_1 = ing_1
+		self.ing_qty_1 = ing_qty_1
+		self.ing_2 = ing_2
+		self.ing_qty_2 = ing_qty_2
+		self.desc = desc
+
+
+#newinfo = ExempleDB(7, 'sixth user', '123456', '25')
+#db.session.add(newinfo)
+#db.session.commit()
+
+#update_this = ExempleDB.query.filter_by(id=6).first
+#update_this.user = "New_user"
+#db.session.commit()
+
+
+
+
+@app.route("/test")
+def test():
+	resultList = Data.query.all()
+	return render_template('test.html', resultList=resultList)
 
 
 @app.before_request
@@ -39,7 +129,7 @@ def index():
 		session['user'] = request.form['username']
 		enteredPassword = request.form['password']
 
-		con = sql.connect("RTS_DB.db")
+		con = sql.connect("RTSDB.db")
 		cur = con.execute("SELECT user, password from data")
 		resultList = [row[0] for row in cur.fetchall()]
 
@@ -52,11 +142,15 @@ def index():
 
 
 
+#Map_and_resources___________________________________________________________
+
+
+
 @app.route("/map")
 def map():
 	if g.user:
-		getUserInfo(g.user)
-		return render_template("map.html", **globals())
+		resources = Data.query.filter_by(user = g.user).all()
+		return render_template("map.html", resources=resources)
 	return redirect(url_for('index'))
 
 
@@ -93,10 +187,10 @@ def gather(clickedRegion):
 	finding = gatherChances()
 
 	#Get value from database to show them in HTML
-	con = sql.connect("RTS_DB.db")
+	con = sql.connect("RTSDB.db")
 	cur = con.execute("SELECT " + finding + " from data WHERE user='"+g.user+"'")
-	#for row in cur:
-		#print row[0]
+	for row in cur:
+		print row[0]
 
 	#Update the value by one (for now)
 	newval = int(row[0]) + 1
@@ -110,43 +204,49 @@ def gather(clickedRegion):
 	return json.dumps({"finding":finding, "newval":newval})
 
 
+
+#Inventory____________________________________________________
+
+
 @app.route("/inventory")
 def inventory():
 	if g.user:
-		return render_template("inventory.html", **globals())
+		resources = Data.query.filter_by(user = g.user).all()
+		return render_template("inventory.html", resources=resources)
 	return redirect(url_for('index'))
+
+
+
+#Crafting______________________________________________________
 
 
 @app.route("/craft")
 def craft():
 	if g.user:
-		#Recipes from database no longer used
-		
-		return render_template("craft.html", **globals())
+		#Get all recipes from Table recipes
+		resources = Data.query.filter_by(user = g.user).all()
+		recipes = Recipes.query.all()
+
+		return render_template("craft.html", recipes=recipes, resources=resources)
+
 	return redirect(url_for('index'))
+
+
+'''
+@app.route("/showComponent/<clickedComponent>")
+def showComponent(clickedComponent):
+	recipe = Data.query.filter_by(name = clickedComponent).all()
+	return recipe
+'''
+
 
 
 @app.route("/craftProcess/<item>", methods=['POST'])
 def craftProcess(item):
-	getUserInfo(g.user)
-	if item == "medpack":
-		saltWater -= basicMedpack.ing_qty_1
-		iron -= basicMedpack.ing_qty_2
-		print basicMedpack.name
+	clickedItem = Recipes.query.filter_by(result = item).all()
+	resource = Data.query.filter_by(user = g.user).all()
 
-	return saltWater
-
-
-@app.route("/showComponent/<clickedComponent>")
-def showComponent(clickedComponent):
-	con = sql.connect("RTS_DB.db")
-	cur = con.cursor()
-	cur.execute("SELECT * FROM recipes WHERE name="+clickedComponent+"")
-	rows = cur.fetchall()
-	for row in rows:
-		print row
-	name= row[1]
-	
+	return "ok"
 	
 
 @app.route("/3d_test_1")
@@ -169,10 +269,13 @@ def test_3():
 	return redirect(url_for('index'))
 
 
+'''
 def getUserInfo(userx):
-	con = sql.connect("RTS_DB.db")
+	con = sql.connect("RTSDB.db")
 	cur = con.execute("SELECT * from data WHERE user='"+userx+"'")
+	print "Userx is: %s", userx
 	userInfoList = [row[0] for row in cur.fetchall()]
+	print userInfoList
 	global saltWater, freshWater, elixir, pearl, \
 	iron, coal, titanium, diamond
 	saltWater = row[3]
@@ -185,6 +288,6 @@ def getUserInfo(userx):
 	diamond = row[10]
 	con.commit()
 	con.close()
-
+'''
 if __name__ == "__main__":
     app.run(debug=True, threaded=True)

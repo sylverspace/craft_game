@@ -39,8 +39,16 @@
 
 <style type="text/css">
 
+.resourceGroup{
+    margin-left: 20px;
+}
+
 .subPages{
     margin-left: 20px;
+}
+#welcome{
+    position: relative;
+    top: 13px;
 }
 
 
@@ -89,37 +97,40 @@
             </form>
         </ul>
         <ul class="nav navbar-nav navbar-right">
-            <p>Welcome <strong>{{ g.user }}</strong><p>
+            <p id="welcome">Welcome <strong>{{ g.user }}</strong><p>
         </ul>
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
 
 
+{% for resource in resources %}
 
 <!--Water block-->
 <div class="resourceGroup">
     <span class="resourcesLabel">Water {</span>
-    <div class="resources common">Salt Water = <span id="saltWater">{{ saltWater }}</span></div>
+    <div class="resources common">Salt Water = <span id="saltWater">{{ resource.saltWater }}</span></div>
 
-    <div class="resources rare">Fresh Water = <span id="freshWater">{{ freshWater }}</span></div>
+    <div class="resources rare">Fresh Water = <span id="freshWater">{{ resource.freshWater }}</span></div>
 
-    <div class="resources epic">Elixir = <span id="elixir">{{ elixir }}</span></div>
+    <div class="resources epic">Elixir = <span id="elixir">{{ resource.elixir }}</span></div>
 
-    <div class="resources legendary">Pearls = <span id="pearl">{{ pearl }}</span></div>
+    <div class="resources legendary">Pearls = <span id="pearl">{{ resource.pearl }}</span></div>
 </div>
 
 <!--Mining block-->
 <div class="resourceGroup">
     <span class="resourcesLabel">Mining {</span>
-    <div class="resources common">Iron = <span id="iron">{{ iron }}</span></div>
+    <div class="resources common">Iron = <span id="iron">{{ resource.iron }}</span></div>
 
-    <div class="resources rare">Coal = <span id="coal">{{ coal }}</span></div>
+    <div class="resources rare">Coal = <span id="coal">{{ resource.coal }}</span></div>
 
-    <div class="resources epic">Titanium = <span id="titanium">{{ titanium }}</span></div>
+    <div class="resources epic">Titanium = <span id="titanium">{{ resource.titanium }}</span></div>
 
-    <div class="resources legendary">Diamonds = <span id="diamond">{{ diamond }}</span></div>
+    <div class="resources legendary">Diamonds = <span id="diamond">{{ resource.diamond }}</span></div>
 </div>
+
+{% endfor %}
 
 <br/><br/>
 
