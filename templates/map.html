@@ -4,6 +4,34 @@
 <style type="text/css">
 
 
+
+img{
+
+}
+#mapFrame{
+	-khtml-user-select: none;
+    -o-user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+
+    border: 1px solid black;
+    width: 300px;
+    height: 300px;
+    overflow: hidden;
+    position: relative;
+}
+
+#mapFrame img{
+	overflow: hidden;
+	position: absolute;
+	top: -100px;
+	left: -200px;
+
+
+
+}
+
 </style>
 
 <section>
@@ -17,11 +45,14 @@
 <br/><br/>
 
 
-<img src="{{url_for('static', filename='img/mainmap.PNG')}}" usemap="#planetmap"/>
+<div id="mapFrame">
+	<img id="mapFrameImg" src="{{url_for('static', filename='img/mainmap.PNG')}}" usemap="#mainMap"/>
+</div>
+<div></div>
 
-<map name="planetmap">
-  <area class="region" shape="poly" coords="800,0,800,194,670,194,670,0" alt="water" data-region-type="water">
-  <area class="region" shape="poly" coords="0,350,57,356,102,383,161,390,219,430,224,479,0,479" alt="rock" data-region-type="mine">
+<map name="mainMap">
+  <area class="region" shape="poly" coords="800,0,800,194,670,194,670,0" alt="water" data-region-type="water" title="Water">
+  <area class="region" shape="poly" coords="0,350,57,356,102,383,161,390,219,430,224,479,0,479" alt="rock" data-region-type="mine" title="Mine">
 </map>
 
 <div id="accordion">
@@ -52,6 +83,29 @@
 <script type="text/javascript">
 
 $(document).ready(function(){
+
+$( ".region").tooltip({
+	track: true
+});
+
+$( "#mapFrameImg" ).draggable({
+        drag: function(event, ui) {
+        if (ui.position.top > 0) {
+            ui.position.top = 0;
+        }
+        var maxtop = ui.helper.parent().height() - ui.helper.height();
+        if ( ui.position.top < maxtop) {
+            ui.position.top = maxtop;
+        }
+        if ( ui.position.left > 0) {
+            ui.position.left = 0;
+        }
+        var maxleft = ui.helper.parent().width() - ui.helper.width();
+        if ( ui.position.left < maxleft) {
+            ui.position.left = maxleft;
+        }
+    }
+});
 
 	$( "#accordion" ).accordion({
 		collapsible: true

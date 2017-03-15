@@ -1,12 +1,28 @@
 {% extends "main.html" %}
 {% block content %}
 
+
+<style type="text/css">
+
+#itemGrid{
+    
+}
+
+#itemGrid div{
+    border: 3px solid black;
+    width: 50px;
+    height: 50px;
+    float: left;
+    margin: 5px
+}
+</style>
+
 <h1>Inventory</h1>
 
 <div id="tabs">
     <ul>
         <li><a href="#tabs-1">Resources</a></li>
-        <li><a href="#tabs-2">Tab 2</a></li>
+        <li><a href="#tabs-2">Items</a></li>
         <li><a href="#tabs-3">Tab 3</a></li>
         <li><a href="#tabs-4">Tab 4</a></li>
         <li><a href="#tabs-5">Tab 5</a></li>
@@ -14,13 +30,58 @@
 
   
     <div id="tabs-1">
-    	Water = <span id="WATER">{{ water }}</span><br/>
-    	Wood = {{ wood }}<br/>
-    	Rock = {{ rock }}<br/>
+    	{% for resource in resources %}
+
+        <!--Water block-->
+        <div class="resourceGroup">
+            <span class="resourcesLabel">Water {</span>
+            <div class="resources common">Salt Water = <span id="saltWater">{{ resource.saltWater }}</span></div>
+
+            <div class="resources rare">Fresh Water = <span id="freshWater">{{ resource.freshWater }}</span></div>
+
+            <div class="resources epic">Elixir = <span id="elixir">{{ resource.elixir }}</span></div>
+
+            <div class="resources legendary">Pearls = <span id="pearl">{{ resource.pearl }}</span></div>
+        </div>
+
+        <!--Mining block-->
+        <div class="resourceGroup">
+            <span class="resourcesLabel">Mining {</span>
+            <div class="resources common">Iron = <span id="iron">{{ resource.iron }}</span></div>
+
+            <div class="resources rare">Coal = <span id="coal">{{ resource.coal }}</span></div>
+
+            <div class="resources epic">Titanium = <span id="titanium">{{ resource.titanium }}</span></div>
+
+            <div class="resources legendary">Diamonds = <span id="diamond">{{ resource.diamond }}</span></div>
+        </div>
+
+        {% endfor %}
     	
     </div>
     <div id="tabs-2">
-    	asdasdasd
+    	<div id="itemGrid">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Quantity</th>
+                    </tr> 
+                </thead>
+                <tbody>
+                    {% for item, val in counter.items() %}
+                    <tr class='clickableRow'>
+                        <td>{{ item }}</td>
+                        <td>{{ val }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        
+
+        </div><!--itemGrid--></br></br>
+
     </div>
     <div id="tabs-3">
     	asdasdasd

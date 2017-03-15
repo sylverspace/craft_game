@@ -15,14 +15,24 @@
     border-radius: 10px;
     float: left;
     width: 300px;
-    height: 400px;
+    height: 300px;
     margin-left: 40px;
     padding-left: 10px;
+    position: relative;
+    font-size: 1.3em;
 
 }
 #recipeDetailsDiv h3/*Name*/{
     text-align: center;
     text-decoration: underline;
+}
+#craftBtn/*Craft button*/{
+    position: absolute;
+    text-align: center;
+    top: 250px;
+    left: 120px;
+    display: none;
+
 }
 
 table{
@@ -60,11 +70,12 @@ table{
                 data-result="{{ recipe.result }}"\
                 data-name="{{ recipe.name }}"\
                 data-type="{{ recipe.type }}"\
+                data-prereq="{{ recipe.prereq }}"\
                 data-desc="{{ recipe.desc }}"\
                 data-ing_1="{{ recipe.ing_1 }}"\
-                data-ing_1_qty="{{ recipe.ing_1_qty }}"\
+                data-ing_qty_1="{{ recipe.ing_qty_1 }}"\
                 data-ing_2="{{ recipe.ing_2 }}"\
-                data-ing_2_qty="{{ recipe.ing_2_qty }}"\>
+                data-ing_qty_2="{{ recipe.ing_qty_2 }}"\>
                     <td>{{ recipe.name }}</td>
                     <td>{{ recipe.type }}</td>
                 </tr>
@@ -93,11 +104,13 @@ table{
 <!--Recipe details____________________________________________-->
 <div id="recipeDetailsDiv">
     
-    <h3 id="clickedName"></h3>
+    <h3 id="clickedName">Select a recipe</h3>
     <span id="clickedType"></span></br>
+    <span id="clickedPrereq"></span></br>
+    <span id="clickedIng_1"></span>  <span id="clickedIng_qty_1"></span></br>
+    <span id="clickedIng_2"></span>  <span id="clickedIng_qty_2"></span></br>
     <span id="clickedDesc"></span></br>
-    <span id="clickedIng_1"></span>  <span id="clickedIng_1_qty"></span></br>
-    <span id="clickedIng_2"></span>  <span id="clickedIng_2_qty"></span></br>
+
     <button id="craftBtn" class="btn btn-success">Craft</button>
     
 </div>
@@ -107,28 +120,33 @@ table{
 
 $( "#tabs" ).tabs();
 
-console.log($(".clickableRow").data("result"))
+console.log($(".clickableRow").data("result"));
 
 $(".clickableRow").click(function(){
 
     clickedResult = $(this).data("result");
     clickedName = $(this).data("name");
     clickedType = $(this).data("type");
+    clickedPrereq = $(this).data("prereq");
     clickedDesc = $(this).data("desc");
     clickedIng_1 = $(this).data("ing_1");
-    clickedIng_1_qty = $(this).data("ing_1_qty");
+    clickedIng_qty_1 = $(this).data("ing_qty_1");
     clickedIng_2 = $(this).data("ing_2");
-    clickedIng_2_qty = $(this).data("ing_2_qty");
+    clickedIng_qty_2 = $(this).data("ing_qty_2");
     console.log(clickedResult);
 
     
     $("#clickedName").html(clickedName);
     $("#clickedType").html("Type: " + clickedType);
+    $("#clickedPrereq").html("Prerequisite: " + clickedPrereq);
     $("#clickedDesc").html("Description: " + clickedDesc);
     $("#clickedIng_1").html(clickedIng_1 + ": ");
-    $("#clickedIng_1_qty").html(clickedIng_1_qty);
+    $("#clickedIng_qty_1").html(clickedIng_qty_1);
     $("#clickedIng_2").html(clickedIng_2 + ": ");
-    $("#clickedIng_2_qty").html(clickedIng_2_qty);
+    $("#clickedIng_qty_2").html(clickedIng_qty_2);
+
+    //Display craft button
+    $("#craftBtn").css("display", "block");
 
     
 });
@@ -136,15 +154,19 @@ $(".clickableRow").click(function(){
 //This calls a python function to craft the item.
 
 $("#craftBtn").on("click", function(){
+        clickedIng_1 = $(this).data("ing_1");
+        clickedIng_2 = $(this).data("ing_2");
+
         $.ajax({
         type: 'POST',
         url: '/craftProcess/' + clickedResult,
         success: function(data){
-            console.log(data);
-            //obj = JSON.parse(data);
-            //console.log(obj);
-            //$("#" +  obj.finding  ).html(obj.newval);
-
+            obj = JSON.parse(data)
+            console.log(obj.stringMessage);
+            $("#" + clickedIng_1).html(obj.newVal1);
+            $("#" + clickedIng_2).html(obj.newVal2);
+            
+            //location.reload();
         }
     });
 });

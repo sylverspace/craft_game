@@ -4,6 +4,8 @@ import os
 import random
 import json
 from flask_sqlalchemy import SQLAlchemy
+import ast #To change string list to a python list
+import collections #To conte duplicate in iventory list using Counter()
 
 
 app = Flask(__name__)
@@ -32,6 +34,7 @@ class Data(db.Model):
 
 
 	def __init__(self, id, user, password, saltWater, freshWater, elixir, pearl, iron, coal, titanium, diamond):
+		
 		self.id = id
 		self.user = user
 		self.password = password
@@ -44,22 +47,14 @@ class Data(db.Model):
 		self.titanium = titanium
 		self.diamond = diamond
 
-	def __str__(self):
-		return {
-            'id': self.id, 
-            'user': self.user,
-            'password': self.password,
-            'saltWater': self.saltWater,
-            'freshWater': self.freshWater,
-            'elixir': self.elixir,
-            'pearl': self.pearl,
-            'iron': self.iron,
-            'coal': self.coal,
-            'titanium': self.titanium,
-            'diamond': self.diamond,
-        }
+	#def __repr__(self):
+	#	return '{}'.format(self.id)
 
-class Recipes(db.Model):
+
+class Recipe(db.Model):
+
+	num_of_rec = 0
+
 	__tablename__ = "recipes"
 	id = db.Column('id', db.Integer, primary_key=True)
 	name = db.Column("name", db.String(20))
@@ -73,6 +68,8 @@ class Recipes(db.Model):
 	desc = db.Column("desc", db.String(20))
 
 	def __init__(self, id, name, type, result, prereq, ing_1, ing_qty_1, ing_2, coal, ing_qty_2, desc):
+		
+
 		self.id = id
 		self.name = name
 		self.type = type
@@ -84,6 +81,28 @@ class Recipes(db.Model):
 		self.ing_qty_2 = ing_qty_2
 		self.desc = desc
 
+		Recipe.num_of_rec += 1
+
+	def __repr__(self):
+		return '{}'.format(self.result)
+
+
+
+'''
+findtest = "saltWater"
+
+userStuff = Data.query.filter_by(user="admin").first()
+value = getattr(userStuff, findtest)
+print (value)
+
+
+temp = int(value)
+temp += 1
+value = str(temp)
+print (value)
+userStuff.saltWater = value
+
+db.session.commit()
 
 #newinfo = ExempleDB(7, 'sixth user', '123456', '25')
 #db.session.add(newinfo)
@@ -93,7 +112,7 @@ class Recipes(db.Model):
 #update_this.user = "New_user"
 #db.session.commit()
 
-
+'''
 
 
 @app.route("/test")
@@ -189,15 +208,19 @@ def gather(clickedRegion):
 	#Get value from database to show them in HTML
 	con = sql.connect("RTSDB.db")
 	cur = con.execute("SELECT " + finding + " from data WHERE user='"+g.user+"'")
+
 	for row in cur:
-		print row[0]
+		print row
 
 	#Update the value by one (for now)
 	newval = int(row[0]) + 1
 	newval = str(newval)
 
 	#Insert new values
-	cur.execute("UPDATE data SET " + finding + " =" + newval + " WHERE user='" + g.user +"'")
+	#Data.update().where(user=g.user).with_entities(finding).values(newval)
+	#db.session.commit()
+
+	cur.execute("UPDATE data SET " + finding + " = " + newval + " WHERE user='" + g.user +"'")
 	con.commit()
 	con.close()
 
@@ -211,8 +234,22 @@ def gather(clickedRegion):
 @app.route("/inventory")
 def inventory():
 	if g.user:
+
+		con = sql.connect("RTSDB.db")
+
+		#Showing ressources
 		resources = Data.query.filter_by(user = g.user).all()
-		return render_template("inventory.html", resources=resources)
+
+		#Getting current inventory
+		cur = con.execute("SELECT items from inventory WHERE user='" + g.user +"'").fetchone()
+		#First row of the list (all items)
+		x = cur[0]
+		#Stinged list as real list
+		currInv = ast.literal_eval(x)
+
+		counter = collections.Counter(currInv)
+		print counter
+		return render_template("inventory.html", resources=resources, currInv=currInv, counter=counter)
 	return redirect(url_for('index'))
 
 
@@ -225,7 +262,8 @@ def craft():
 	if g.user:
 		#Get all recipes from Table recipes
 		resources = Data.query.filter_by(user = g.user).all()
-		recipes = Recipes.query.all()
+		recipes = Recipe.query.all()
+
 
 		return render_template("craft.html", recipes=recipes, resources=resources)
 
@@ -243,10 +281,62 @@ def showComponent(clickedComponent):
 
 @app.route("/craftProcess/<item>", methods=['POST'])
 def craftProcess(item):
-	clickedItem = Recipes.query.filter_by(result = item).all()
-	resource = Data.query.filter_by(user = g.user).all()
 
-	return "ok"
+	con = sql.connect("RTSDB.db")
+	#Getting FIRST required mats
+	cur = con.execute("SELECT ing_1 from recipes WHERE result='"+item+"'").fetchone()
+	ing_1 = cur[0]
+	cur = con.execute("SELECT ing_qty_1 from recipes WHERE result='"+item+"'").fetchone()
+	ing_qty_1 = cur[0]
+
+	#Getting SECOND required mats
+	cur = con.execute("SELECT ing_2 from recipes WHERE result='"+item+"'").fetchone()
+	ing_2 = cur[0]
+	cur = con.execute("SELECT ing_qty_2 from recipes WHERE result='"+item+"'").fetchone()
+	ing_qty_2 = cur[0]
+	
+	#Getting FIRST concerned ressource and removing
+	cur = con.execute("SELECT " + ing_1 + " from data WHERE user='" + g.user +"'").fetchone()
+	oldVal = cur[0]
+	newVal1 = int(oldVal) - ing_qty_1
+
+	#Getting SECOND concerned ressource and removing
+	cur = con.execute("SELECT " + ing_2 + " from data WHERE user='" + g.user +"'").fetchone()
+	oldVal = cur[0]
+	newVal2 = int(oldVal) - ing_qty_1
+	
+	#Updating resources
+	con.execute("UPDATE data SET " +\
+		ing_1 + " = " + str(newVal1) +","+\
+		ing_2 + " = " + str(newVal2) +\
+		" WHERE user='" + g.user +"'")
+
+	#Getting current inventory
+	cur = con.execute("SELECT items from inventory WHERE user='" + g.user +"'").fetchone()
+	# Tuple into list
+	x = list(cur)
+	#First row of the list (all items)
+	x = x[0]
+	#Stinged list as real list
+	x = ast.literal_eval(x)
+	# Add the item
+	x.append(item)
+	# Restring the list
+	x = json.dumps(x)
+	print x
+	
+	#Update the items
+	con.execute('UPDATE inventory SET items = ? WHERE user = ? ', (x, g.user,))
+
+
+	con.commit()
+	con.close()
+
+	#From SQLAlchemy
+	#clickedItem = Recipes.query.filter_by(result = item).all()
+	#resource = Data.query.filter_by(user = g.user).all()
+	stringMessage = item + ' was added to inventory!'
+	return json.dumps({'stringMessage':stringMessage, 'newVal1':newVal1, 'newVal2':newVal2})
 	
 
 @app.route("/3d_test_1")
@@ -269,7 +359,7 @@ def test_3():
 	return redirect(url_for('index'))
 
 
-'''
+
 def getUserInfo(userx):
 	con = sql.connect("RTSDB.db")
 	cur = con.execute("SELECT * from data WHERE user='"+userx+"'")
@@ -288,6 +378,6 @@ def getUserInfo(userx):
 	diamond = row[10]
 	con.commit()
 	con.close()
-'''
+
 if __name__ == "__main__":
     app.run(debug=True, threaded=True)
